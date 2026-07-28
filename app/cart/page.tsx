@@ -109,9 +109,12 @@ export default function CartPage() {
                 <span>Total</span>
                 <span>KSh {subtotal.toLocaleString()}</span>
               </div>
-              <button className="mt-5 w-full rounded-full bg-signal-orange py-3 text-sm font-semibold text-base-bg hover:bg-signal-amber">
+              <Link
+                href="/checkout"
+                className="mt-5 block w-full rounded-full bg-signal-orange py-3 text-center text-sm font-semibold text-base-bg hover:bg-signal-amber"
+              >
                 Checkout
-              </button>
+              </Link>
             </div>
           </div>
         )}

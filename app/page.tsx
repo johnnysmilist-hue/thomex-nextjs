@@ -12,8 +12,9 @@ export default function Home() {
     <main>
       <Header />
       <Hero />
-      <TrustStrip />
       <CategoryGrid />
+      <ProductRail title="Top selling items" items={products} />
+      <TrustStrip />
       <FlashSales />
       <ProductRail title="Recommended for you" items={[...products].reverse()} />
       <Footer />

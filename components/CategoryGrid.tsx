@@ -1,49 +1,60 @@
 import {
-  Smartphone,
-  Laptop,
-  Headphones,
-  Watch,
-  Camera,
-  Gamepad2,
-  House,
-  Cable,
+  BadgePercent,
+  Sparkles,
+  Zap,
+  Tag,
   type LucideIcon,
 } from "lucide-react";
-import { categories } from "@/data/products";
+import { circleShortcuts } from "@/data/categories";
 
 const iconMap: Record<string, LucideIcon> = {
-  smartphone: Smartphone,
-  laptop: Laptop,
-  headphones: Headphones,
-  watch: Watch,
-  camera: Camera,
-  "gamepad-2": Gamepad2,
-  house: House,
-  cable: Cable,
+  "badge-percent": BadgePercent,
+  sparkles: Sparkles,
+  zap: Zap,
+  tag: Tag,
+};
+
+const accentMap: Record<string, string> = {
+  orange: "bg-signal-orange text-base-bg",
+  mint: "bg-signal-mint text-base-bg",
+  amber: "bg-signal-amber text-base-bg",
 };
 
 export default function CategoryGrid() {
   return (
-    <section id="categories" className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
-      <h2 className="mb-6 font-display text-xl font-bold">Shop by category</h2>
-      <div className="grid grid-cols-4 gap-3 sm:grid-cols-8">
-        {categories.map((cat) => {
-          const Icon = iconMap[cat.icon];
-          return (
-            <a
-              key={cat.name}
-              href="#"
-              className="group flex flex-col items-center gap-2 rounded-xl border border-base-border bg-base-surface p-4 text-center transition hover:border-signal-orange/50 hover:bg-base-surface2"
-            >
-              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-base-surface2 text-signal-orange group-hover:bg-signal-orange group-hover:text-base-bg">
-                <Icon size={18} />
-              </span>
-              <span className="text-xs font-medium text-ink-muted group-hover:text-ink-primary">
-                {cat.name}
-              </span>
-            </a>
-          );
-        })}
+    <section id="categories" className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+      <div className="no-scrollbar -mx-4 grid grid-flow-col grid-rows-2 gap-x-6 gap-y-6 overflow-x-auto px-4 sm:mx-0 sm:grid-flow-row sm:grid-cols-6 sm:px-0 lg:grid-cols-6">
+        {circleShortcuts.map((item) => (
+          <a
+            key={item.label}
+            href="#"
+            className="group flex w-20 flex-col items-center gap-2 text-center sm:w-auto"
+          >
+            {item.type === "photo" ? (
+              <span
+                className="h-16 w-16 rounded-full border border-base-border bg-cover bg-center transition group-hover:border-signal-orange/60 sm:h-20 sm:w-20"
+                style={{ backgroundImage: `url(${item.image})` }}
+              />
+            ) : (
+              (() => {
+                const Icon = iconMap[item.icon];
+                return (
+                  <span
+                    className={`flex h-16 w-16 flex-col items-center justify-center rounded-full text-center leading-tight sm:h-20 sm:w-20 ${accentMap[item.accent]}`}
+                  >
+                    <Icon size={18} />
+                    <span className="mt-0.5 text-[9px] font-bold uppercase tracking-wide">
+                      {item.label}
+                    </span>
+                  </span>
+                );
+              })()
+            )}
+            <span className="text-xs text-ink-muted group-hover:text-ink-primary">
+              {item.type === "photo" ? item.label : item.sublabel}
+            </span>
+          </a>
+        ))}
       </div>
     </section>
   );

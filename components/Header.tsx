@@ -2,9 +2,11 @@
 
 import { Search, Heart, ShoppingCart, User, Zap } from "lucide-react";
 import { useState } from "react";
+import { useCart } from "@/context/CartContext";
 
 export default function Header() {
   const [query, setQuery] = useState("");
+  const { itemCount } = useCart();
 
   return (
     <header className="sticky top-0 z-50 border-b border-base-border bg-base-bg/95 backdrop-blur">
@@ -47,15 +49,18 @@ export default function Header() {
           >
             <User size={19} />
           </button>
-          <button
+          <a
+            href="/cart"
             aria-label="Cart"
             className="relative rounded-full p-2 text-ink-muted hover:bg-base-surface hover:text-ink-primary"
           >
             <ShoppingCart size={19} />
-            <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-signal-orange text-[10px] font-semibold text-base-bg">
-              2
-            </span>
-          </button>
+            {itemCount > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-signal-orange text-[10px] font-semibold text-base-bg">
+                {itemCount}
+              </span>
+            )}
+          </a>
         </nav>
       </div>
 

@@ -1,17 +1,34 @@
+import Link from "next/link";
 import { Zap } from "lucide-react";
 
 const columns = [
   {
     title: "Shop",
-    links: ["Phones", "Laptops", "Audio", "Wearables", "Deals"],
+    links: [
+      { label: "Phones", href: "/category/phones" },
+      { label: "Laptops", href: "/category/laptops" },
+      { label: "Audio", href: "/category/audio" },
+      { label: "Wearables", href: "/category/wearables" },
+      { label: "Deals", href: "/#deals" },
+    ],
   },
   {
     title: "Help",
-    links: ["Track order", "Shipping & delivery", "Returns", "Contact us"],
+    links: [
+      { label: "Track order", href: "/track" },
+      { label: "Shipping & delivery", href: "#" },
+      { label: "Returns", href: "#" },
+      { label: "Contact us", href: "#" },
+    ],
   },
   {
     title: "Thomex",
-    links: ["About us", "Sell on Thomex", "Careers", "Terms & conditions"],
+    links: [
+      { label: "About us", href: "#" },
+      { label: "Sell on Thomex", href: "#" },
+      { label: "Careers", href: "#" },
+      { label: "Terms & conditions", href: "#" },
+    ],
   },
 ];
 
@@ -38,13 +55,13 @@ export default function Footer() {
               </h4>
               <ul className="space-y-2">
                 {col.links.map((l) => (
-                  <li key={l}>
-                    <a
-                      href="#"
+                  <li key={l.label}>
+                    <Link
+                      href={l.href}
                       className="text-sm text-ink-muted hover:text-signal-orange"
                     >
-                      {l}
-                    </a>
+                      {l.label}
+                    </Link>
                   </li>
                 ))}
               </ul>

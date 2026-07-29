@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   BadgePercent,
   Sparkles,
@@ -25,9 +26,9 @@ export default function CategoryGrid() {
     <section id="categories" className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
       <div className="no-scrollbar -mx-4 grid grid-flow-col grid-rows-2 gap-x-6 gap-y-6 overflow-x-auto px-4 sm:mx-0 sm:grid-flow-row sm:grid-cols-6 sm:px-0 lg:grid-cols-6">
         {circleShortcuts.map((item) => (
-          <a
+          <Link
             key={item.label}
-            href="#"
+            href={item.type === "photo" ? `/category/${item.slug}` : item.href}
             className="group flex w-20 flex-col items-center gap-2 text-center sm:w-auto"
           >
             {item.type === "photo" ? (
@@ -53,7 +54,7 @@ export default function CategoryGrid() {
             <span className="text-xs text-ink-muted group-hover:text-ink-primary">
               {item.type === "photo" ? item.label : item.sublabel}
             </span>
-          </a>
+          </Link>
         ))}
       </div>
     </section>

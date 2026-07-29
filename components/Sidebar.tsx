@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   Store,
   Smartphone,
@@ -39,9 +40,9 @@ export default function Sidebar() {
         {sidebarCategories.map((cat) => {
           const Icon = iconMap[cat.icon];
           return (
-            <a
+            <Link
               key={cat.name}
-              href="#"
+              href={cat.slug ? `/category/${cat.slug}` : "#"}
               className="group flex items-center gap-3 border-b border-base-border/60 px-4 py-2.5 text-sm text-ink-muted last:border-0 hover:bg-base-surface2 hover:text-ink-primary"
             >
               <Icon size={15} className="shrink-0 text-ink-faint group-hover:text-signal-orange" />
@@ -50,7 +51,7 @@ export default function Sidebar() {
                 size={13}
                 className="shrink-0 text-ink-faint opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100"
               />
-            </a>
+            </Link>
           );
         })}
       </nav>

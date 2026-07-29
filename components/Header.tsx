@@ -43,12 +43,13 @@ export default function Header() {
           >
             <Heart size={19} />
           </button>
-          <button
-            aria-label="Account"
+          <a
+            href="/track"
+            aria-label="Track your order"
             className="rounded-full p-2 text-ink-muted hover:bg-base-surface hover:text-ink-primary"
           >
             <User size={19} />
-          </button>
+          </a>
           <a
             href="/cart"
             aria-label="Cart"
@@ -80,21 +81,26 @@ export default function Header() {
 
       <div className="hidden border-t border-base-border/60 md:block">
         <div className="mx-auto flex max-w-7xl gap-6 px-6 py-2 text-sm text-ink-muted">
-          {["Phones", "Laptops", "Audio", "Wearables", "Gaming", "Deals"].map(
-            (item) => (
-              <a
-                key={item}
-                href="#"
-                className={
-                  item === "Deals"
-                    ? "font-medium text-signal-orange hover:text-signal-amber"
-                    : "hover:text-ink-primary"
-                }
-              >
-                {item}
-              </a>
-            )
-          )}
+          {[
+            { label: "Phones", href: "/category/phones" },
+            { label: "Laptops", href: "/category/laptops" },
+            { label: "Audio", href: "/category/audio" },
+            { label: "Wearables", href: "/category/wearables" },
+            { label: "Gaming", href: "/category/gaming" },
+            { label: "Deals", href: "/#deals" },
+          ].map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              className={
+                item.label === "Deals"
+                  ? "font-medium text-signal-orange hover:text-signal-amber"
+                  : "hover:text-ink-primary"
+              }
+            >
+              {item.label}
+            </a>
+          ))}
         </div>
       </div>
     </header>

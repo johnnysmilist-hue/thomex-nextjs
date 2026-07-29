@@ -1,16 +1,26 @@
 "use client";
 
-import { Search, Heart, ShoppingCart, User, Zap } from "lucide-react";
+import { Search, Heart, ShoppingCart, User, Zap, Menu } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
+import { useMobileMenu } from "@/context/MobileMenuContext";
 
 export default function Header() {
   const [query, setQuery] = useState("");
   const { itemCount } = useCart();
+  const { toggle } = useMobileMenu();
 
   return (
     <header className="sticky top-0 z-50 border-b border-base-border bg-base-bg/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center gap-6 px-4 py-3 sm:px-6">
+        <button
+          aria-label="Open menu"
+          onClick={toggle}
+          className="rounded-full p-2 text-ink-muted hover:bg-base-surface hover:text-ink-primary md:hidden"
+        >
+          <Menu size={20} />
+        </button>
+
         <a href="/" className="flex items-center gap-2 shrink-0">
           <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-signal-orange text-base-bg">
             <Zap size={18} strokeWidth={2.5} />
@@ -39,14 +49,14 @@ export default function Header() {
         <nav className="ml-auto flex items-center gap-1 sm:gap-2">
           <button
             aria-label="Wishlist"
-            className="rounded-full p-2 text-ink-muted hover:bg-base-surface hover:text-ink-primary"
+            className="hidden rounded-full p-2 text-ink-muted hover:bg-base-surface hover:text-ink-primary md:block"
           >
             <Heart size={19} />
           </button>
           <a
             href="/track"
             aria-label="Track your order"
-            className="rounded-full p-2 text-ink-muted hover:bg-base-surface hover:text-ink-primary"
+            className="hidden rounded-full p-2 text-ink-muted hover:bg-base-surface hover:text-ink-primary md:block"
           >
             <User size={19} />
           </a>

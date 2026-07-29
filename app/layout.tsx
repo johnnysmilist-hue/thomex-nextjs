@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import { CartProvider } from "@/context/CartContext";
+import { MobileMenuProvider } from "@/context/MobileMenuContext";
+import MobileMenu from "@/components/MobileMenu";
+import MobileTabBar from "@/components/MobileTabBar";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -35,9 +38,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable} font-body bg-base-bg text-ink-primary antialiased`}
+        className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable} font-body bg-base-bg pb-14 text-ink-primary antialiased md:pb-0`}
       >
-        <CartProvider>{children}</CartProvider>
+        <CartProvider>
+          <MobileMenuProvider>
+            {children}
+            <MobileMenu />
+            <MobileTabBar />
+          </MobileMenuProvider>
+        </CartProvider>
       </body>
     </html>
   );

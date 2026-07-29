@@ -18,13 +18,13 @@ const columns = [
       { label: "Track order", href: "/track" },
       { label: "Shipping & delivery", href: "#" },
       { label: "Returns", href: "#" },
-      { label: "Contact us", href: "#" },
+      { label: "Contact us", href: "/about#contact" },
     ],
   },
   {
     title: "Thomex",
     links: [
-      { label: "About us", href: "#" },
+      { label: "About us", href: "/about" },
       { label: "Sell on Thomex", href: "#" },
       { label: "Careers", href: "#" },
       { label: "Terms & conditions", href: "#" },

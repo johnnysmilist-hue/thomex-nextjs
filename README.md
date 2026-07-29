@@ -4,7 +4,7 @@ An electronics & gadget storefront built with Next.js 14 (App Router) + TypeScri
 
 ## What's in here
 
-- `app/` — homepage, `product/[id]` (product detail), `category/[slug]` (category listing), `cart`, `checkout`, `track` (order lookup)
+- `app/` — homepage, `product/[id]` (product detail), `category/[slug]` (category listing), `cart`, `checkout`, `track` (order lookup), `about` (about/contact)
 - `components/` — Header, Hero, category grid, flash sales, product cards, product detail, footer
 - `context/CartContext.tsx` — client-side cart (add/remove/qty), persisted to `localStorage`
 - `data/products.ts` — demo product data. Swap these for real products later.

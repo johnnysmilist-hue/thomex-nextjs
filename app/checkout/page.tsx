@@ -6,6 +6,7 @@ import { MessageCircle, Mail, ShoppingBag, Smartphone, Loader2, CheckCircle2, XC
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import { ORDER_WHATSAPP_NUMBER, ORDER_EMAIL } from "@/data/config";
 import {
   formatOrderMessage,
@@ -18,6 +19,7 @@ type MpesaState = "idle" | "sending" | "waiting" | "paid" | "failed" | "error";
 
 export default function CheckoutPage() {
   const { lines, subtotal, clear } = useCart();
+  const { user } = useAuth();
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -69,6 +71,7 @@ export default function CheckoutPage() {
           paymentMethod: opts.paymentMethod,
           paymentStatus: opts.paymentStatus,
           mpesaCheckoutId: opts.mpesaCheckoutId,
+          userId: user?.id,
         }),
       });
       const data = await res.json();

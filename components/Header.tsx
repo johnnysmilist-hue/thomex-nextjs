@@ -4,11 +4,15 @@ import { Search, Heart, ShoppingCart, User, Zap, Menu } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { useMobileMenu } from "@/context/MobileMenuContext";
+import { useAuth } from "@/context/AuthContext";
+import { useWishlist } from "@/context/WishlistContext";
 
 export default function Header() {
   const [query, setQuery] = useState("");
   const { itemCount } = useCart();
   const { toggle } = useMobileMenu();
+  const { user } = useAuth();
+  const { items: wishlistItems } = useWishlist();
 
   return (
     <header className="sticky top-0 z-50 border-b border-base-border bg-base-bg/95 backdrop-blur">
@@ -47,15 +51,21 @@ export default function Header() {
         </div>
 
         <nav className="ml-auto flex items-center gap-1 sm:gap-2">
-          <button
+          <a
+            href="/wishlist"
             aria-label="Wishlist"
-            className="hidden rounded-full p-2 text-ink-muted hover:bg-base-surface hover:text-ink-primary md:block"
+            className="relative hidden rounded-full p-2 text-ink-muted hover:bg-base-surface hover:text-ink-primary md:block"
           >
             <Heart size={19} />
-          </button>
+            {wishlistItems.length > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-signal-orange text-[10px] font-semibold text-base-bg">
+                {wishlistItems.length}
+              </span>
+            )}
+          </a>
           <a
-            href="/track"
-            aria-label="Track your order"
+            href={user ? "/account" : "/signin"}
+            aria-label={user ? "My account" : "Sign in"}
             className="hidden rounded-full p-2 text-ink-muted hover:bg-base-surface hover:text-ink-primary md:block"
           >
             <User size={19} />

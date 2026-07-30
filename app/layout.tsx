@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import { CartProvider } from "@/context/CartContext";
+import { WishlistProvider } from "@/context/WishlistContext";
 import { MobileMenuProvider } from "@/context/MobileMenuContext";
+import { AuthProvider } from "@/context/AuthContext";
 import MobileMenu from "@/components/MobileMenu";
 import MobileTabBar from "@/components/MobileTabBar";
 import "./globals.css";
@@ -41,11 +43,15 @@ export default function RootLayout({
         className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable} font-body bg-base-bg pb-14 text-ink-primary antialiased md:pb-0`}
       >
         <CartProvider>
-          <MobileMenuProvider>
-            {children}
-            <MobileMenu />
-            <MobileTabBar />
-          </MobileMenuProvider>
+          <WishlistProvider>
+            <AuthProvider>
+              <MobileMenuProvider>
+                {children}
+                <MobileMenu />
+                <MobileTabBar />
+              </MobileMenuProvider>
+            </AuthProvider>
+          </WishlistProvider>
         </CartProvider>
       </body>
     </html>

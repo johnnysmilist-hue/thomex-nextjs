@@ -17,9 +17,12 @@ import {
   PackageSearch,
   Info,
   Zap,
+  User,
+  Heart,
   type LucideIcon,
 } from "lucide-react";
 import { useMobileMenu } from "@/context/MobileMenuContext";
+import { useAuth } from "@/context/AuthContext";
 import { sidebarCategories } from "@/data/categories";
 
 const iconMap: Record<string, LucideIcon> = {
@@ -37,6 +40,7 @@ const iconMap: Record<string, LucideIcon> = {
 
 export default function MobileMenu() {
   const { open, setOpen } = useMobileMenu();
+  const { user } = useAuth();
 
   useEffect(() => {
     if (!open) return;
@@ -116,8 +120,12 @@ export default function MobileMenu() {
           <nav className="overflow-hidden rounded-xl border border-base-border">
             {[
               { label: "Flash deals", href: "/#deals", icon: Zap },
+              { label: "Wishlist", href: "/wishlist", icon: Heart },
               { label: "Track my order", href: "/track", icon: PackageSearch },
               { label: "About & contact", href: "/about", icon: Info },
+              user
+                ? { label: "My account", href: "/account", icon: User }
+                : { label: "Sign in / Create account", href: "/signin", icon: User },
             ].map(({ label, href, icon: Icon }) => (
               <Link
                 key={label}

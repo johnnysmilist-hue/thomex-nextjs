@@ -1,14 +1,22 @@
 "use client";
 
-import { useState } from "react";
-import { Star, Minus, Plus, ShoppingCart, ShieldCheck, Truck } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Star, Minus, Plus, ShoppingCart, ShieldCheck, Truck, Heart } from "lucide-react";
 import type { Product } from "@/data/products";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
+import { addRecentlyViewed } from "@/lib/recentlyViewed";
 
 export default function ProductDetail({ product }: { product: Product }) {
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
   const { addItem } = useCart();
+  const { toggle, isWishlisted } = useWishlist();
+  const wishlisted = isWishlisted(product.id);
+
+  useEffect(() => {
+    addRecentlyViewed(product.id);
+  }, [product.id]);
 
   const discount =
     product.oldPrice &&
@@ -90,6 +98,18 @@ export default function ProductDetail({ product }: { product: Product }) {
           >
             <ShoppingCart size={16} />
             {added ? "Added to cart" : "Add to cart"}
+          </button>
+
+          <button
+            onClick={() => toggle(product)}
+            aria-label={wishlisted ? "Remove from wishlist" : "Save to wishlist"}
+            className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full border transition ${
+              wishlisted
+                ? "border-signal-orange bg-signal-orange/10 text-signal-orange"
+                : "border-base-border text-ink-muted hover:text-signal-orange"
+            }`}
+          >
+            <Heart size={17} className={wishlisted ? "fill-signal-orange" : ""} />
           </button>
         </div>
 

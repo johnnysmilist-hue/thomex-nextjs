@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Heart, Star, Plus } from "lucide-react";
 import type { Product } from "@/data/products";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 
 const badgeStyles: Record<string, string> = {
   Deal: "bg-signal-orange text-base-bg",
@@ -13,6 +14,8 @@ const badgeStyles: Record<string, string> = {
 
 export default function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
+  const { toggle, isWishlisted } = useWishlist();
+  const wishlisted = isWishlisted(product.id);
 
   const discount =
     product.oldPrice &&
@@ -28,10 +31,13 @@ export default function ProductCard({ product }: { product: Product }) {
         </span>
       )}
       <button
-        aria-label="Save to wishlist"
-        className="absolute right-3 top-3 z-10 rounded-full bg-base-bg/70 p-1.5 text-ink-muted hover:text-signal-orange"
+        aria-label={wishlisted ? "Remove from wishlist" : "Save to wishlist"}
+        onClick={() => toggle(product)}
+        className={`absolute right-3 top-3 z-10 rounded-full bg-base-bg/70 p-1.5 transition hover:text-signal-orange ${
+          wishlisted ? "text-signal-orange" : "text-ink-muted"
+        }`}
       >
-        <Heart size={14} />
+        <Heart size={14} className={wishlisted ? "fill-signal-orange" : ""} />
       </button>
 
       <Link href={`/product/${product.id}`} className="contents">

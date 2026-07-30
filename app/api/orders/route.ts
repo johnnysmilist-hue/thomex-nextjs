@@ -14,6 +14,7 @@ export async function POST(req: NextRequest) {
       paymentMethod,
       paymentStatus,
       mpesaCheckoutId,
+      userId,
     } = body;
 
     if (!customerName || !phone || !location || !items?.length) {
@@ -37,6 +38,7 @@ export async function POST(req: NextRequest) {
         payment_status: paymentStatus || "unpaid",
         mpesa_checkout_id: mpesaCheckoutId || null,
         status: "pending",
+        user_id: userId || null,
       })
       .select("id")
       .single();

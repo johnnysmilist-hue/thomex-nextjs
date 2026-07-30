@@ -23,3 +23,19 @@ create index if not exists orders_phone_idx on orders (phone);
 -- go through server-side API routes using the service role key, which
 -- bypasses these policies entirely — so no public policies are needed here.
 alter table orders enable row level security;
+
+-- ── Migration: link orders to signed-in accounts ───────────────────────
+-- Safe to run again even if you already ran the block above — these use
+-- "if not exists" guards. Paste this whole file into the SQL Editor again
+-- and hit Run; it won't duplicate anything that's already there.
+
+alter table orders add column if not exists user_id uuid references auth.users(id);
+create index if not exists orders_user_id_idx on orders (user_id);
+
+-- Lets a signed-in customer see their own orders (My Orders on the account
+-- page) without needing the service role key — Postgres checks this policy
+-- using their auth session automatically.
+drop policy if exists "Users can view own orders" on orders;
+create policy "Users can view own orders"
+  on orders for select
+  using (auth.uid() = user_id);

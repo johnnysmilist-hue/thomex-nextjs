@@ -39,3 +39,31 @@ drop policy if exists "Users can view own orders" on orders;
 create policy "Users can view own orders"
   on orders for select
   using (auth.uid() = user_id);
+
+-- ── Migration: move the product catalog into the database ──────────────
+-- Also safe to run again. This lets the /admin page manage products
+-- directly instead of editing data/products.ts on GitHub for every change.
+
+create table if not exists products (
+  id text primary key,            -- keep matching the slugs already used in URLs, e.g. "p1"
+  created_at timestamptz not null default now(),
+  name text not null,
+  category text not null,
+  price numeric not null,
+  old_price numeric,
+  specs text[] not null default '{}',
+  rating numeric not null default 0,
+  reviews integer not null default 0,
+  badge text,                     -- 'New' | 'Deal' | 'Best Seller' | null
+  image text not null
+);
+
+-- The catalog is public information — anyone (including logged-out
+-- visitors) needs to read it to browse the store. Writes still only ever
+-- happen through the admin API routes using the service role key.
+alter table products enable row level security;
+drop policy if exists "Anyone can view products" on products;
+create policy "Anyone can view products"
+  on products for select
+  using (true);
+

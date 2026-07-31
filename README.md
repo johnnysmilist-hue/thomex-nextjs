@@ -94,6 +94,24 @@ Add both in Vercel → Settings → Environment Variables, then redeploy.
 
 **If you already ran `supabase/schema.sql` before this feature existed, run it again** — the bottom of that file now has a migration block that adds a `user_id` column linking orders to accounts, plus a security policy that lets a signed-in customer see only their own orders (not anyone else's). It's safe to paste and run the whole file again; it won't duplicate anything already there.
 
+## Admin dashboard (`/admin`)
+
+A simple, private dashboard for running the store day to day — no need to touch Supabase's Table Editor or GitHub for routine changes anymore:
+
+- **Orders tab** — every order, with a status dropdown (Pending → Confirmed → Dispatched → Delivered, or Cancelled) that updates instantly. Customers checking `/track` or their `/account` see the new status right away.
+- **Products tab** — add, edit, or delete products directly: name, category, price, sale price, specs, rating, badge, image URL. This replaces editing `data/products.ts` on GitHub for every price change or new item.
+
+**Set it up:**
+
+1. Run `supabase/schema.sql` again in Supabase's SQL Editor (it now includes a `products` table with public read access — safe to re-run).
+2. Run `supabase/seed-products.sql` once too — it loads the same 6 demo products that were previously hardcoded, so the storefront doesn't go blank the moment products move into the database.
+3. Add an `ADMIN_EMAILS` environment variable in Vercel — a comma-separated list of the email(s) allowed to use `/admin` (e.g. your own sign-in email). Anyone signed in with an email **not** on this list gets a clear "Not authorized" page instead.
+4. Redeploy.
+
+**How access is enforced:** every admin action goes through an API route that checks your signed-in session server-side against `ADMIN_EMAILS` before touching the database — the check can't be bypassed from the browser, since it never trusts anything the client claims about itself.
+
+**Note:** `/admin` isn't linked anywhere in the site's navigation on purpose — bookmark the URL directly. If a product hasn't been added to the database yet, the storefront automatically falls back to the demo catalog in `data/products.ts`, so nothing breaks while you're getting products set up.
+
 ## Deploying with no terminal (GitHub website + Vercel)
 
 1. **Get this code into a GitHub repo.**

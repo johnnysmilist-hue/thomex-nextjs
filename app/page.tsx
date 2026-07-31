@@ -5,9 +5,12 @@ import CategoryGrid from "@/components/CategoryGrid";
 import FlashSales from "@/components/FlashSales";
 import ProductRail from "@/components/ProductRail";
 import Footer from "@/components/Footer";
-import { products } from "@/data/products";
+import { getProducts } from "@/lib/getProducts";
 
-export default function Home() {
+export default async function Home() {
+  const products = await getProducts();
+  const deals = products.filter((p) => p.oldPrice);
+
   return (
     <main>
       <Header />
@@ -15,7 +18,7 @@ export default function Home() {
       <CategoryGrid />
       <ProductRail title="Top selling items" items={products} />
       <TrustStrip />
-      <FlashSales />
+      <FlashSales items={deals} />
       <ProductRail title="Recommended for you" items={[...products].reverse()} />
       <Footer />
     </main>

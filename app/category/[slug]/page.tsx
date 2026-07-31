@@ -3,7 +3,7 @@ import { ChevronRight } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductGrid from "@/components/ProductGrid";
-import { products } from "@/data/products";
+import { getProducts } from "@/lib/getProducts";
 import { shopCategories } from "@/data/categories";
 import { slugify } from "@/lib/slug";
 
@@ -11,10 +11,11 @@ export function generateStaticParams() {
   return shopCategories.map((c) => ({ slug: c.slug }));
 }
 
-export default function CategoryPage({ params }: { params: { slug: string } }) {
+export default async function CategoryPage({ params }: { params: { slug: string } }) {
   const category = shopCategories.find((c) => c.slug === params.slug);
   const label = category?.name ?? params.slug.replace(/-/g, " ");
 
+  const products = await getProducts();
   const items = products.filter((p) => slugify(p.category) === params.slug);
 
   return (

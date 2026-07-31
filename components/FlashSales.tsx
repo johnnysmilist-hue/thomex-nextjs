@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Timer } from "lucide-react";
-import { products } from "@/data/products";
+import type { Product } from "@/data/products";
 import ProductCard from "./ProductCard";
 
 function useCountdown(hours: number) {
@@ -23,9 +23,10 @@ function useCountdown(hours: number) {
     .padStart(2, "0")}s`;
 }
 
-export default function FlashSales() {
+export default function FlashSales({ items }: { items: Product[] }) {
   const countdown = useCountdown(6);
-  const deals = products.filter((p) => p.oldPrice);
+
+  if (items.length === 0) return null;
 
   return (
     <section id="deals" className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
@@ -36,7 +37,7 @@ export default function FlashSales() {
         </span>
       </div>
       <div className="no-scrollbar -mx-4 flex gap-4 overflow-x-auto px-4 sm:mx-0 sm:grid sm:grid-cols-4 sm:px-0 lg:grid-cols-6">
-        {deals.map((p) => (
+        {items.map((p) => (
           <ProductCard key={p.id} product={p} />
         ))}
       </div>

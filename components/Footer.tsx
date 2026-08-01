@@ -16,8 +16,8 @@ const columns = [
     title: "Help",
     links: [
       { label: "Track order", href: "/track" },
-      { label: "Shipping & delivery", href: "#" },
-      { label: "Returns", href: "#" },
+      { label: "Shipping & delivery", href: "/terms#delivery" },
+      { label: "Returns", href: "/terms#returns" },
       { label: "Contact us", href: "/about#contact" },
     ],
   },
@@ -27,7 +27,8 @@ const columns = [
       { label: "About us", href: "/about" },
       { label: "Sell on Thomex", href: "#" },
       { label: "Careers", href: "#" },
-      { label: "Terms & conditions", href: "#" },
+      { label: "Terms & conditions", href: "/terms" },
+      { label: "Privacy policy", href: "/privacy" },
     ],
   },
 ];

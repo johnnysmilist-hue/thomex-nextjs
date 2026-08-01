@@ -1,7 +1,8 @@
 "use client";
 
 import { Search, Heart, ShoppingCart, User, Zap, Menu } from "lucide-react";
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { useMobileMenu } from "@/context/MobileMenuContext";
 import { useAuth } from "@/context/AuthContext";
@@ -13,6 +14,13 @@ export default function Header() {
   const { toggle } = useMobileMenu();
   const { user } = useAuth();
   const { items: wishlistItems } = useWishlist();
+  const router = useRouter();
+
+  const handleSearch = (e: FormEvent) => {
+    e.preventDefault();
+    const q = query.trim();
+    if (q) router.push(`/search?q=${encodeURIComponent(q)}`);
+  };
 
   return (
     <header className="sticky top-0 z-50 border-b border-base-border bg-base-bg/95 backdrop-blur">
@@ -35,7 +43,7 @@ export default function Header() {
         </a>
 
         <div className="hidden flex-1 md:block">
-          <label className="relative flex items-center">
+          <form onSubmit={handleSearch} className="relative flex items-center">
             <Search
               size={17}
               className="pointer-events-none absolute left-3 text-ink-faint"
@@ -47,7 +55,7 @@ export default function Header() {
               placeholder="Search phones, laptops, audio…"
               className="w-full rounded-full border border-base-border bg-base-surface py-2.5 pl-10 pr-4 text-sm text-ink-primary placeholder:text-ink-faint focus:border-signal-orange focus:outline-none"
             />
-          </label>
+          </form>
         </div>
 
         <nav className="ml-auto flex items-center gap-1 sm:gap-2">
@@ -86,17 +94,19 @@ export default function Header() {
       </div>
 
       <div className="border-t border-base-border/60 px-4 sm:hidden">
-        <label className="relative flex items-center py-2">
+        <form onSubmit={handleSearch} className="relative flex items-center py-2">
           <Search
             size={16}
             className="pointer-events-none absolute left-3 text-ink-faint"
           />
           <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
             type="text"
             placeholder="Search Thomex…"
             className="w-full rounded-full border border-base-border bg-base-surface py-2 pl-9 pr-4 text-sm placeholder:text-ink-faint focus:border-signal-orange focus:outline-none"
           />
-        </label>
+        </form>
       </div>
 
       <div className="hidden border-t border-base-border/60 md:block">

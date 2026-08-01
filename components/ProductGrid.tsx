@@ -6,7 +6,13 @@ import ProductCard from "./ProductCard";
 
 type Sort = "featured" | "price-asc" | "price-desc" | "rating";
 
-export default function ProductGrid({ products }: { products: Product[] }) {
+export default function ProductGrid({
+  products,
+  emptyMessage = "No products in this category yet — check back soon.",
+}: {
+  products: Product[];
+  emptyMessage?: string;
+}) {
   const [sort, setSort] = useState<Sort>("featured");
 
   const sorted = useMemo(() => {
@@ -20,7 +26,7 @@ export default function ProductGrid({ products }: { products: Product[] }) {
   if (products.length === 0) {
     return (
       <div className="rounded-xl border border-base-border bg-base-surface py-16 text-center text-ink-muted">
-        No products in this category yet — check back soon.
+        {emptyMessage}
       </div>
     );
   }

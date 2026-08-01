@@ -4,7 +4,7 @@ An electronics & gadget storefront built with Next.js 14 (App Router) + TypeScri
 
 ## What's in here
 
-- `app/` — homepage, `product/[id]` (product detail), `category/[slug]` (category listing), `cart`, `checkout`, `track` (order lookup), `about` (about/contact), `signin`, `signup`, `account`, `wishlist`
+- `app/` — homepage, `product/[id]` (product detail + reviews), `category/[slug]` (category listing), `search`, `cart`, `checkout`, `track` (order lookup), `about` (about/contact), `signin`, `signup`, `account`, `wishlist`, `admin`, `terms`, `privacy`
 - `components/` — Header, Hero, category grid, flash sales, product cards, product detail, footer
 - `context/CartContext.tsx` — client-side cart (add/remove/qty), persisted to `localStorage`
 - `data/products.ts` — demo product data. Swap these for real products later.
@@ -94,23 +94,42 @@ Add both in Vercel → Settings → Environment Variables, then redeploy.
 
 **If you already ran `supabase/schema.sql` before this feature existed, run it again** — the bottom of that file now has a migration block that adds a `user_id` column linking orders to accounts, plus a security policy that lets a signed-in customer see only their own orders (not anyone else's). It's safe to paste and run the whole file again; it won't duplicate anything already there.
 
+## Reviews & ratings
+
+Every product page now has a real reviews section — signed-in customers can leave a star rating (1–5) and an optional comment. A customer can only leave one review per product; submitting again edits their existing review instead of creating a duplicate, and they can delete their own review at any time.
+
+The star rating and review count shown everywhere else on the site (product cards, category pages) update automatically — every time a review is added, edited, or deleted, the product's average rating and count get recalculated from the real reviews. Products with no reviews yet still show the placeholder rating from the demo catalog (or whatever you set in `/admin`) until real reviews start coming in.
+
+**Set it up:** run `supabase/schema.sql` again in Supabase's SQL Editor — it now includes a `reviews` table (safe to re-run). No new environment variables needed.
+
+**Why reviews require signing in:** it keeps the system honest — one real customer, one review — and reuses the same account system already built rather than adding a separate anonymous-comments system that would need its own spam protection.
+
 ## Admin dashboard (`/admin`)
 
 A simple, private dashboard for running the store day to day — no need to touch Supabase's Table Editor or GitHub for routine changes anymore:
 
 - **Orders tab** — every order, with a status dropdown (Pending → Confirmed → Dispatched → Delivered, or Cancelled) that updates instantly. Customers checking `/track` or their `/account` see the new status right away.
-- **Products tab** — add, edit, or delete products directly: name, category, price, sale price, specs, rating, badge, image URL. This replaces editing `data/products.ts` on GitHub for every price change or new item.
+- **Products tab** — add, edit, or delete products directly: name, category, price, sale price, specs, rating, badge, and a **photo you upload straight from your phone or computer** — no need to find or host an image link yourself (though pasting one in is still there as a fallback, under "Or paste an image link instead"). This replaces editing `data/products.ts` on GitHub for every price change or new item.
 
 **Set it up:**
 
 1. Run `supabase/schema.sql` again in Supabase's SQL Editor (it now includes a `products` table with public read access — safe to re-run).
 2. Run `supabase/seed-products.sql` once too — it loads the same 6 demo products that were previously hardcoded, so the storefront doesn't go blank the moment products move into the database.
-3. Add an `ADMIN_EMAILS` environment variable in Vercel — a comma-separated list of the email(s) allowed to use `/admin` (e.g. your own sign-in email). Anyone signed in with an email **not** on this list gets a clear "Not authorized" page instead.
-4. Redeploy.
+3. Run `supabase/storage.sql` once — creates the public storage bucket that uploaded product photos live in.
+4. Add an `ADMIN_EMAILS` environment variable in Vercel — a comma-separated list of the email(s) allowed to use `/admin` (e.g. your own sign-in email). Anyone signed in with an email **not** on this list gets a clear "Not authorized" page instead.
+5. Redeploy.
 
-**How access is enforced:** every admin action goes through an API route that checks your signed-in session server-side against `ADMIN_EMAILS` before touching the database — the check can't be bypassed from the browser, since it never trusts anything the client claims about itself.
+**How access is enforced:** every admin action — including photo uploads — goes through an API route that checks your signed-in session server-side against `ADMIN_EMAILS` before touching the database or storage — the check can't be bypassed from the browser, since it never trusts anything the client claims about itself. Uploaded photos are capped at 8MB and must be JPG, PNG, WEBP, or GIF.
 
 **Note:** `/admin` isn't linked anywhere in the site's navigation on purpose — bookmark the URL directly. If a product hasn't been added to the database yet, the storefront automatically falls back to the demo catalog in `data/products.ts`, so nothing breaks while you're getting products set up.
+
+## Terms & Privacy
+
+`/terms` and `/privacy` are real pages now, linked from the footer (About us, Contact us, Shipping & delivery, Returns, Terms & conditions, Privacy policy all point to real content — the Help links jump straight to the matching section on the Terms page). The sign-up page also links both.
+
+**Read them before publishing.** Both are honest starting templates that describe what the site actually does — pay-on-delivery and M-Pesa payments, 7-day returns, what data gets collected and why, which third parties are involved (Safaricom, Supabase, Vercel, WhatsApp) — but neither is a substitute for a lawyer's review, especially the liability and returns sections. Both pages have a visible "before you publish this" note as a reminder, which you'll probably want to remove once you've had them checked.
+
+Edit either file directly on GitHub (`app/terms/page.tsx`, `app/privacy/page.tsx`) — same as any other page.
 
 ## Deploying with no terminal (GitHub website + Vercel)
 

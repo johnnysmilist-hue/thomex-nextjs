@@ -67,3 +67,29 @@ create policy "Anyone can view products"
   on products for select
   using (true);
 
+-- ── Migration: customer reviews ─────────────────────────────────────────
+-- Also safe to run again.
+
+create table if not exists reviews (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  product_id text not null references products(id) on delete cascade,
+  user_id uuid not null references auth.users(id),
+  customer_name text not null,
+  rating integer not null check (rating between 1 and 5),
+  comment text,
+  unique (product_id, user_id)  -- one review per customer per product; resubmitting edits it
+);
+
+create index if not exists reviews_product_id_idx on reviews (product_id);
+
+-- Reviews are public information — anyone needs to read them to browse the
+-- store, same as products. Writes only ever happen through /api/reviews,
+-- which checks the visitor is signed in server-side before using the
+-- service role key — so no public write policy is needed here.
+alter table reviews enable row level security;
+drop policy if exists "Anyone can view reviews" on reviews;
+create policy "Anyone can view reviews"
+  on reviews for select
+  using (true);
+

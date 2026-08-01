@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Loader2, Trash2, Pencil, Plus, X } from "lucide-react";
+import { Loader2, Trash2, Pencil, Plus, X, Upload, ImageIcon } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/context/AuthContext";
@@ -226,6 +226,8 @@ function ProductsTab() {
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
 
   const load = () => {
     fetch("/api/admin/products")
@@ -240,6 +242,7 @@ function ProductsTab() {
     setEditingId(null);
     setShowForm(true);
     setError("");
+    setUploadError("");
   };
 
   const startEdit = (p: AdminProduct) => {
@@ -258,12 +261,30 @@ function ProductsTab() {
     setEditingId(p.id);
     setShowForm(true);
     setError("");
+    setUploadError("");
   };
 
   const remove = async (id: string) => {
     if (!confirm("Delete this product?")) return;
     await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
     load();
+  };
+
+  const handleUpload = async (file: File) => {
+    setUploading(true);
+    setUploadError("");
+    try {
+      const body = new FormData();
+      body.append("file", file);
+      const res = await fetch("/api/admin/upload", { method: "POST", body });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Upload failed");
+      setForm((f) => ({ ...f, image: data.url }));
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
+    }
   };
 
   const submit = async () => {
@@ -358,19 +379,66 @@ function ProductsTab() {
               onChange={(v) => setForm({ ...form, specs: v })}
               className="sm:col-span-2"
             />
-            <Field
-              label="Image URL"
-              value={form.image}
-              onChange={(v) => setForm({ ...form, image: v })}
-              className="sm:col-span-2"
-            />
+            <div className="sm:col-span-2">
+              <label className="mb-1 block text-xs text-ink-muted">Photo</label>
+              <div className="flex items-center gap-3">
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-base-border bg-base-surface2">
+                  {form.image ? (
+                    <div
+                      className="h-full w-full bg-cover bg-center"
+                      style={{ backgroundImage: `url(${form.image})` }}
+                    />
+                  ) : (
+                    <ImageIcon size={18} className="text-ink-faint" />
+                  )}
+                </div>
+
+                <label className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-base-border py-3 text-sm text-ink-muted hover:border-signal-orange/50 hover:text-ink-primary">
+                  {uploading ? (
+                    <>
+                      <Loader2 size={15} className="animate-spin" /> Uploading…
+                    </>
+                  ) : (
+                    <>
+                      <Upload size={15} /> Upload photo
+                    </>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    className="hidden"
+                    disabled={uploading}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleUpload(file);
+                      e.target.value = "";
+                    }}
+                  />
+                </label>
+              </div>
+              {uploadError && (
+                <p className="mt-1.5 text-xs text-signal-orange">{uploadError}</p>
+              )}
+              <details className="mt-2">
+                <summary className="cursor-pointer text-xs text-ink-faint hover:text-ink-muted">
+                  Or paste an image link instead
+                </summary>
+                <input
+                  type="text"
+                  value={form.image}
+                  onChange={(e) => setForm({ ...form, image: e.target.value })}
+                  placeholder="https://…"
+                  className="mt-2 w-full rounded-lg border border-base-border bg-base-surface2 px-3 py-2 text-sm focus:border-signal-orange focus:outline-none"
+                />
+              </details>
+            </div>
           </div>
 
           {error && <p className="mt-3 text-sm text-signal-orange">{error}</p>}
 
           <button
             onClick={submit}
-            disabled={saving}
+            disabled={saving || uploading}
             className="mt-4 rounded-full bg-signal-orange px-5 py-2.5 text-sm font-semibold text-base-bg hover:bg-signal-amber disabled:opacity-50"
           >
             {saving ? "Saving…" : editingId ? "Save changes" : "Create product"}

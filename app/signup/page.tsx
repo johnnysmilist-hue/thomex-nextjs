@@ -116,6 +116,18 @@ export default function SignUpPage() {
 
           {error && <p className="text-sm text-signal-orange">{error}</p>}
 
+          <p className="text-xs text-ink-faint">
+            By creating an account, you agree to Thomex&apos;s{" "}
+            <Link href="/terms" className="text-signal-orange hover:text-signal-amber">
+              Terms
+            </Link>{" "}
+            and{" "}
+            <Link href="/privacy" className="text-signal-orange hover:text-signal-amber">
+              Privacy Policy
+            </Link>
+            .
+          </p>
+
           <button
             type="submit"
             disabled={loading}

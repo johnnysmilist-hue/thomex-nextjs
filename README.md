@@ -106,22 +106,26 @@ The star rating and review count shown everywhere else on the site (product card
 
 ## Admin dashboard (`/admin`)
 
-A simple, private dashboard for running the store day to day — no need to touch Supabase's Table Editor or GitHub for routine changes anymore:
+A private, WordPress-styled dashboard for running the store day to day — no need to touch Supabase's Table Editor or GitHub for routine changes anymore. It looks and works like the WordPress admin: a dark sidebar, "Howdy, {your email}" at the top, and list tables with hover row actions.
 
-- **Orders tab** — every order, with a status dropdown (Pending → Confirmed → Dispatched → Delivered, or Cancelled) that updates instantly. Customers checking `/track` or their `/account` see the new status right away.
-- **Products tab** — add, edit, or delete products directly: name, category, price, sale price, specs, rating, badge, and a **photo you upload straight from your phone or computer** — no need to find or host an image link yourself (though pasting one in is still there as a fallback, under "Or paste an image link instead"). This replaces editing `data/products.ts` on GitHub for every price change or new item.
+- **Dashboard** — order count, pending orders, product count, and a quick view of recent orders.
+- **Orders** — every order, with a status dropdown (Pending → Confirmed → Dispatched → Delivered, or Cancelled) that updates instantly. Click a row to expand and see the items. Customers checking `/track` or their `/account` see the new status right away.
+- **Products** — add, edit, or delete products directly: name, category, price, sale price, specs, rating, badge, and a **photo you upload straight from your phone or computer** (pasting a link in is still there as a fallback). Edit/Delete appear on hover under the product name, same as WordPress's Posts list.
+- **Media** — every photo that's ever been uploaded, in one grid, WordPress Media Library-style. Click one to see its details and delete it. Anything not currently used by a product is flagged "Unused" so you know what's safe to clean up. You can also upload a fresh photo here directly, before assigning it to a product.
+- **Users** — every account that's signed up, with join date, last sign-in, and how many orders they've placed. Read-only — this isn't where admin access is granted (see `ADMIN_EMAILS` below).
+- **Settings** — edit your WhatsApp number and order email right from the dashboard instead of editing `data/config.ts` on GitHub. Changes take effect immediately across the whole site (checkout, the Contact page) — no redeploy needed.
 
 **Set it up:**
 
-1. Run `supabase/schema.sql` again in Supabase's SQL Editor (it now includes a `products` table with public read access — safe to re-run).
+1. Run `supabase/schema.sql` again in Supabase's SQL Editor (it now includes `products` and `settings` tables — safe to re-run).
 2. Run `supabase/seed-products.sql` once too — it loads the same 6 demo products that were previously hardcoded, so the storefront doesn't go blank the moment products move into the database.
-3. Run `supabase/storage.sql` once — creates the public storage bucket that uploaded product photos live in.
+3. Run `supabase/storage.sql` once — creates the public storage bucket that uploaded photos live in.
 4. Add an `ADMIN_EMAILS` environment variable in Vercel — a comma-separated list of the email(s) allowed to use `/admin` (e.g. your own sign-in email). Anyone signed in with an email **not** on this list gets a clear "Not authorized" page instead.
 5. Redeploy.
 
-**How access is enforced:** every admin action — including photo uploads — goes through an API route that checks your signed-in session server-side against `ADMIN_EMAILS` before touching the database or storage — the check can't be bypassed from the browser, since it never trusts anything the client claims about itself. Uploaded photos are capped at 8MB and must be JPG, PNG, WEBP, or GIF.
+**How access is enforced:** every admin action — including photo uploads, settings changes, and viewing the user list — goes through an API route that checks your signed-in session server-side against `ADMIN_EMAILS` before touching the database or storage. The check can't be bypassed from the browser, since it never trusts anything the client claims about itself. Uploaded photos are capped at 8MB and must be JPG, PNG, WEBP, or GIF.
 
-**Note:** `/admin` isn't linked anywhere in the site's navigation on purpose — bookmark the URL directly. If a product hasn't been added to the database yet, the storefront automatically falls back to the demo catalog in `data/products.ts`, so nothing breaks while you're getting products set up.
+**Note:** `/admin` isn't linked anywhere in the site's navigation on purpose — bookmark the URL directly. If a product hasn't been added to the database yet, the storefront automatically falls back to the demo catalog in `data/products.ts`; same idea for settings — until you save something in Settings, the site uses the placeholder WhatsApp number/email in `data/config.ts`.
 
 ## Terms & Privacy
 

@@ -7,7 +7,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
-import { ORDER_WHATSAPP_NUMBER, ORDER_EMAIL } from "@/data/config";
+import { useSettings } from "@/context/SettingsContext";
 import {
   formatOrderMessage,
   buildWhatsAppLink,
@@ -89,7 +89,7 @@ export default function CheckoutPage() {
   const recordOrder = (paymentNote: string) => {
     // Also fires the order to WhatsApp so it's easy to act on immediately,
     // on top of it being saved in the database.
-    const url = buildWhatsAppLink(ORDER_WHATSAPP_NUMBER, buildMessage(paymentNote));
+    const url = buildWhatsAppLink(settings.whatsapp, buildMessage(paymentNote));
     window.open(url, "_blank");
   };
 
@@ -100,8 +100,8 @@ export default function CheckoutPage() {
     const message = buildMessage("Payment: cash or M-Pesa on delivery");
     const url =
       channel === "whatsapp"
-        ? buildWhatsAppLink(ORDER_WHATSAPP_NUMBER, message)
-        : buildMailtoLink(ORDER_EMAIL, message);
+        ? buildWhatsAppLink(settings.whatsapp, message)
+        : buildMailtoLink(settings.email, message);
     window.open(url, "_blank");
     setSent(channel);
     clear();

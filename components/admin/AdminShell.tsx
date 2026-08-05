@@ -6,6 +6,9 @@ import {
   LayoutDashboard,
   ShoppingBag,
   Package,
+  Image as ImageIcon,
+  Users,
+  Settings,
   ExternalLink,
   LogOut,
 } from "lucide-react";
@@ -15,6 +18,9 @@ const navItems = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Orders", href: "/admin/orders", icon: ShoppingBag },
   { label: "Products", href: "/admin/products", icon: Package },
+  { label: "Media", href: "/admin/media", icon: ImageIcon },
+  { label: "Users", href: "/admin/users", icon: Users },
+  { label: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {

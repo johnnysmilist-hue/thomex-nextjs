@@ -4,7 +4,7 @@ import { useState } from "react";
 import { MessageCircle, Mail, MapPin, Truck, ShieldCheck, RotateCcw, Headset } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { ORDER_WHATSAPP_NUMBER, ORDER_EMAIL } from "@/data/config";
+import { useSettings } from "@/context/SettingsContext";
 
 const values = [
   {
@@ -35,10 +35,10 @@ export default function AboutPage() {
 
   const canSend = name.trim() && message.trim();
 
-  const waLink = `https://wa.me/${ORDER_WHATSAPP_NUMBER}?text=${encodeURIComponent(
+  const waLink = `https://wa.me/${settings.whatsapp}?text=${encodeURIComponent(
     `Hi Thomex, I'm ${name || "..."}.\n\n${message}`
   )}`;
-  const mailLink = `mailto:${ORDER_EMAIL}?subject=${encodeURIComponent(
+  const mailLink = `mailto:${settings.email}?subject=${encodeURIComponent(
     "Message from Thomex website"
   )}&body=${encodeURIComponent(`From: ${name || "..."}\n\n${message}`)}`;
 
@@ -91,7 +91,7 @@ export default function AboutPage() {
           <div className="grid gap-8 md:grid-cols-2">
             <div className="space-y-4">
               <a
-                href={`https://wa.me/${ORDER_WHATSAPP_NUMBER}`}
+                href={`https://wa.me/${settings.whatsapp}`}
                 target="_blank"
                 rel="noreferrer"
                 className="flex items-center gap-3 rounded-xl border border-base-border bg-base-surface p-4 hover:border-signal-mint/50"
@@ -105,7 +105,7 @@ export default function AboutPage() {
                 </div>
               </a>
               <a
-                href={`mailto:${ORDER_EMAIL}`}
+                href={`mailto:${settings.email}`}
                 className="flex items-center gap-3 rounded-xl border border-base-border bg-base-surface p-4 hover:border-signal-orange/50"
               >
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-signal-orange/15 text-signal-orange">
@@ -113,7 +113,7 @@ export default function AboutPage() {
                 </span>
                 <div>
                   <p className="text-sm font-medium text-ink-primary">Email</p>
-                  <p className="text-xs text-ink-faint">{ORDER_EMAIL}</p>
+                  <p className="text-xs text-ink-faint">{settings.email}</p>
                 </div>
               </a>
               <div className="flex items-center gap-3 rounded-xl border border-base-border bg-base-surface p-4">

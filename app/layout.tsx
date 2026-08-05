@@ -4,6 +4,7 @@ import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { MobileMenuProvider } from "@/context/MobileMenuContext";
 import { AuthProvider } from "@/context/AuthContext";
+import { SettingsProvider } from "@/context/SettingsContext";
 import MobileMenu from "@/components/MobileMenu";
 import MobileTabBar from "@/components/MobileTabBar";
 import "./globals.css";
@@ -45,11 +46,13 @@ export default function RootLayout({
         <CartProvider>
           <WishlistProvider>
             <AuthProvider>
-              <MobileMenuProvider>
-                {children}
-                <MobileMenu />
-                <MobileTabBar />
-              </MobileMenuProvider>
+              <SettingsProvider>
+                <MobileMenuProvider>
+                  {children}
+                  <MobileMenu />
+                  <MobileTabBar />
+                </MobileMenuProvider>
+              </SettingsProvider>
             </AuthProvider>
           </WishlistProvider>
         </CartProvider>

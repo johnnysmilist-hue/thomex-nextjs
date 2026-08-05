@@ -93,3 +93,22 @@ create policy "Anyone can view reviews"
   on reviews for select
   using (true);
 
+-- ── Migration: site settings ────────────────────────────────────────────
+-- Also safe to run again. Lets values like your WhatsApp number and order
+-- email be changed from /admin/settings instead of editing code on GitHub.
+-- data/config.ts is still the fallback used until a row exists for a key.
+
+create table if not exists settings (
+  key text primary key,
+  value text not null
+);
+
+-- Public read — the storefront (checkout, about page) needs these values
+-- for every visitor, not just admins. Writes only ever happen through
+-- /api/admin/settings, which checks ADMIN_EMAILS server-side.
+alter table settings enable row level security;
+drop policy if exists "Anyone can view settings" on settings;
+create policy "Anyone can view settings"
+  on settings for select
+  using (true);
+
